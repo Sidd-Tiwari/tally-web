@@ -1,0 +1,41 @@
+/* ============================================================
+   TALLY — design tokens
+   Concept: a passbook / ledger, kept by hand. Paper that's seen
+   use, ink that's a little soft, numbers set in a printer mono.
+   The signature motif is the tally mark - the oldest way humans
+   have counted anything, which is exactly what this app does:
+   counts your money, counts your days.
+   ============================================================ */
+
+:root {
+  /* Paper (aged, slightly green-grey - not a clean cream) */
+  --paper: #E6E1D2;
+  --paper-raised: #EFEBDF;
+  --paper-deep: #DAD3BE;
+
+  /* Ink */
+  --ink: #22281F;
+  --ink-soft: #5B5B4C;
+  --ink-faint: #8C8874;
+
+  /* Ruled lines */
+  --line: #C7BEA3;
+  --line-strong: #A89F81;
+
+  /* Semantic accents - each tied to a real meaning in the app */
+  --credit: #3F6E52;       /* income / positive balance */
+  --credit-soft: #E4EBDF;
+  --debit: #9C4A32;        /* expense / negative */
+  --debit-soft: #F1E2DA;
+  --brass: #B9862E;        /* streaks, tally marks, primary actions */
+  --brass-soft: #F1E4C4;
+  --brass-dark: #8F6620;
+
+  /* Type */
+  --font-display: 'Fraunces', Georgia, serif;
+  --font-body: 'IBM Plex Sans', -apple-system, sans-serif;
+  --font-mono: 'IBM Plex Mono', 'Courier New', monospace;
+
+  --radius: 3px;
+  --shadow-card: 0 1px 0 rgba(34, 40, 31, 0.06), 0 2px 8px rgba(34, 40, 31, 0.05);
+}
