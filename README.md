@@ -1,4 +1,4 @@
-# Tally — Frontend
+# Personal Tracker — Frontend
 
 A React (Vite) frontend for the Personal Tracker microservices backend. Talks to the API Gateway at `http://localhost:8080` — no direct calls to individual services.
 
