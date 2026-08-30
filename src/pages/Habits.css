@@ -1,0 +1,67 @@
+.habit-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+}
+
+.habit-card {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.habit-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.habit-name {
+  font-size: 17px;
+  margin-bottom: 2px;
+}
+
+.habit-freq {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink-faint);
+}
+
+.chip-remove-btn {
+  background: none;
+  border: none;
+  color: var(--ink-faint);
+  font-size: 18px;
+  line-height: 1;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.chip-remove-btn:hover {
+  background: var(--debit-soft);
+  color: var(--debit);
+}
+
+.habit-tally-block {
+  min-height: 44px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.habit-streak-label {
+  font-size: 12px;
+  color: var(--ink-faint);
+}
+
+.habit-best {
+  color: var(--brass-dark);
+}
+
+.habit-complete-btn {
+  width: 100%;
+  justify-content: center;
+}
