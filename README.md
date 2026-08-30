@@ -2,6 +2,7 @@
 
 [![React](https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=white)](https://react.dev/)
 [![Vite](https://img.shields.io/badge/Vite-5-646CFF?logo=vite&logoColor=white)](https://vitejs.dev/)
+[![React Router](https://img.shields.io/badge/React%20Router-6-CA4245?logo=reactrouter&logoColor=white)](https://reactrouter.com/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](#license)
 
 A React (Vite) frontend for the **Tally** personal finance and habit-tracking platform, built on a microservices backend. Communicates exclusively with the API Gateway — never directly with individual backend services.
@@ -17,6 +18,84 @@ The app is built around a single idea: a **tally mark** is the oldest way to cou
 - **Paper/ledger palette** — warm aged-paper background, ink-toned text, brass as the primary accent, forest-green for credits, rust for debits
 - **Typography** — Fraunces (display), IBM Plex Sans (body), IBM Plex Mono (all numbers, tabular)
 - **Signature element** — hand-tally-style SVG strokes (four verticals + one diagonal slash) used to visualize habit streaks — a real, at-a-glance count, not decoration
+
+## Where This Fits
+
+```mermaid
+flowchart LR
+    subgraph Frontend["tally-web (this repo)"]
+        UI["React SPA<br/>:5173 (dev)"]
+    end
+
+    subgraph Backend["tally-backend"]
+        GW["API Gateway :8080<br/>JWT · CORS · Rate limiting"]
+        A["Auth Service"]
+        E["Expense Service"]
+        H["Habit Service"]
+    end
+
+    UI -->|"fetch('/api/...')<br/>Authorization: Bearer token"| GW
+    GW --> A
+    GW --> E
+    GW --> H
+
+    style UI fill:#B9862E,color:#fff
+    style GW fill:#3F6E52,color:#fff
+```
+
+This app never talks to `auth-service`, `expense-service`, or `habit-service` directly — every request goes through the gateway, which is the only backend URL this codebase ever references (see `vite.config.js` for local dev, or `VITE_API_BASE` for production).
+
+## App Navigation
+
+```mermaid
+flowchart TD
+    Start(["Visit app"]) --> Check{"Logged in?"}
+    Check -->|No| Login["Login page"]
+    Check -->|Yes| Dashboard
+
+    Login <-->|"Switch"| Register["Register page"]
+    Login -->|"Success"| Dashboard
+
+    Dashboard["Dashboard<br/>Monthly summary + activity"] --> Ledger["Ledger<br/>Expenses, income, categories"]
+    Dashboard --> Habits["Habits<br/>Streak tracking"]
+    Dashboard --> Tasks["Tasks<br/>Checklist + priorities"]
+
+    Ledger -.->|"Sidebar nav"| Habits
+    Habits -.->|"Sidebar nav"| Tasks
+    Tasks -.->|"Sidebar nav"| Dashboard
+
+    Dashboard --> Logout(["Log out → back to Login"])
+
+    style Dashboard fill:#B9862E,color:#fff
+    style Login fill:#9C4A32,color:#fff
+```
+
+Every page except Login/Register is wrapped in `ProtectedLayout`, which redirects to `/login` if there's no valid session — see `src/components/ProtectedLayout.jsx`.
+
+## Authentication Flow
+
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant Login as Login.jsx
+    participant Ctx as AuthContext
+    participant API as api/client.js
+    participant GW as API Gateway
+
+    U->>Login: Submit email + password
+    Login->>Ctx: login(email, password)
+    Ctx->>API: api.login({email, password})
+    API->>GW: POST /api/auth/login
+    GW-->>API: 200 {token, userId, name, email}
+    API-->>Ctx: response
+    Ctx->>Ctx: setSession() → localStorage + state
+    Ctx-->>Login: resolved
+    Login->>Login: navigate("/")
+
+    Note over API,GW: Every later request attaches<br/>Authorization: Bearer token<br/>automatically via api/client.js
+```
+
+Session state lives in `AuthContext` (React Context), backed by `localStorage` so a refresh doesn't log the user out. Every subsequent API call goes through the single `api/client.js` wrapper, which attaches the token and normalizes error responses so pages just `try/catch` and show `err.message`.
 
 ## Features
 
