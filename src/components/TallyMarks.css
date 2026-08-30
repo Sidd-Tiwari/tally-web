@@ -1,0 +1,57 @@
+.tally-marks {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.tally-group {
+  display: inline-flex;
+  align-items: center;
+  position: relative;
+  padding-right: 2px;
+}
+
+.tally-group:not(:last-child)::after {
+  content: '';
+  display: inline-block;
+  width: 1px;
+  height: 14px;
+  background: var(--line-strong);
+  margin: 0 6px 0 4px;
+}
+
+.tally-stroke {
+  overflow: visible;
+  margin-left: -2px;
+}
+
+.tally-stroke line {
+  stroke: var(--brass-dark);
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.tally-slash line {
+  stroke: var(--brass);
+  margin-left: -5px;
+}
+
+.tally-overflow {
+  font-size: 12px;
+  color: var(--ink-faint);
+}
+
+.tally-empty {
+  color: var(--ink-faint);
+}
+
+.tally-draw-in line {
+  stroke-dasharray: 24;
+  stroke-dashoffset: 24;
+  animation: tally-draw 0.35s ease forwards;
+}
+
+@keyframes tally-draw {
+  to { stroke-dashoffset: 0; }
+}
