@@ -1,64 +1,114 @@
 # Personal Tracker — Frontend
 
-A React (Vite) frontend for the Personal Tracker microservices backend. Talks to the API Gateway at `http://localhost:8080` — no direct calls to individual services.
+[![React](https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=white)](https://react.dev/)
+[![Vite](https://img.shields.io/badge/Vite-5-646CFF?logo=vite&logoColor=white)](https://vitejs.dev/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](#license)
 
-## Design concept
+A React (Vite) frontend for the **Tally** personal finance and habit-tracking platform, built on a microservices backend. Communicates exclusively with the API Gateway — never directly with individual backend services.
 
-The app is built around a single idea: a **tally mark** is the oldest way to count anything, and this app counts two things — money and days. The whole visual identity (aged-paper palette, ledger rules, tabular mono numbers, and the tally-mark streak indicator on the Habits page) grows from that one idea rather than a generic dashboard template.
+**Backend repository:** [tally-backend](https://github.com/Sidd-Tiwari/tally-backend)
 
-- **Paper/ledger palette** — warm aged-paper background, ink-toned text, brass as the primary accent, forest-green for credits, rust for debits.
-- **Fraunces** (display) + **IBM Plex Sans** (body) + **IBM Plex Mono** (all numbers, tabular).
-- **Signature element**: hand-tally-style SVG strokes (groups of 4 verticals + 1 diagonal slash) used to show habit streaks — a real, at-a-glance visual count, not decoration.
+---
+
+## Design Concept
+
+The app is built around a single idea: a **tally mark** is the oldest way to count anything, and this app counts two things — money and days. The entire visual identity grows from that one idea rather than a generic dashboard template:
+
+- **Paper/ledger palette** — warm aged-paper background, ink-toned text, brass as the primary accent, forest-green for credits, rust for debits
+- **Typography** — Fraunces (display), IBM Plex Sans (body), IBM Plex Mono (all numbers, tabular)
+- **Signature element** — hand-tally-style SVG strokes (four verticals + one diagonal slash) used to visualize habit streaks — a real, at-a-glance count, not decoration
+
+## Features
+
+- Secure authentication (JWT-based session handling)
+- Monthly financial dashboard — income, expenses, net balance at a glance
+- Full ledger — expense/income CRUD with custom categories
+- Habit tracking with streak visualization
+- Task management with priority levels and due dates
+- Responsive layout, built mobile-first
+
+## Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Framework | React 18 + Vite 5 |
+| Routing | React Router |
+| Styling | Custom CSS with design tokens (no framework dependency) |
+| State | React Context (auth/session) |
+| API layer | Fetch-based client with JWT attachment and error normalization |
 
 ## Prerequisites
 
 - Node.js 18+
-- The backend running (see the backend's own README) — specifically the **API Gateway on port 8080**.
+- The backend running locally or deployed — see [tally-backend](https://github.com/Sidd-Tiwari/tally-backend) — specifically the **API Gateway on port 8080**
 
-## Running it
+## Getting Started
 
 ```bash
 npm install
 npm run dev
 ```
 
-Opens on `http://localhost:5173`. The dev server proxies `/api/*` requests to `http://localhost:8080` (see `vite.config.js`), so there's no CORS setup needed locally.
+Runs on `http://localhost:5173`. The dev server proxies `/api/*` requests to `http://localhost:8080` (see `vite.config.js`), so no CORS configuration is needed locally.
 
-## Building for production
+## Building for Production
 
 ```bash
 npm run build
 ```
 
-Outputs static files to `dist/`. Serve these with any static file server (nginx, Vercel, Netlify, etc). Since there's no dev proxy in production, you'll need to either:
+Outputs static files to `dist/`. Serve these with any static host (nginx, Vercel, Netlify, etc.). Since there's no dev proxy in production, choose one:
 
-1. Put a reverse proxy in front that forwards `/api/*` to your gateway, or
-2. Set `VITE_API_BASE` and update `src/api/client.js` to use an absolute URL instead of the relative `/api` path.
+1. Put a reverse proxy in front that forwards `/api/*` to your deployed gateway, or
+2. Set an environment variable (e.g. `VITE_API_BASE`) and update `src/api/client.js` to use an absolute URL instead of the relative `/api` path.
 
-## Structure
+## Project Structure
 
 ```
 src/
-├── api/client.js          # fetch wrapper - attaches JWT, normalizes errors
-├── context/AuthContext.jsx # session state (login/register/logout)
+├── api/client.js            # Fetch wrapper — attaches JWT, normalizes errors
+├── context/AuthContext.jsx  # Session state (login/register/logout)
 ├── components/
-│   ├── TallyMarks.jsx      # the signature streak visual
-│   ├── Sidebar.jsx         # passbook-style nav
+│   ├── TallyMarks.jsx       # The signature streak visual
+│   ├── Sidebar.jsx          # Passbook-style navigation
 │   ├── StatCard.jsx
-│   └── ProtectedLayout.jsx # redirects to /login if not authenticated
+│   └── ProtectedLayout.jsx  # Redirects to /login if not authenticated
 ├── pages/
 │   ├── Login.jsx / Register.jsx
-│   ├── Dashboard.jsx       # monthly summary + recent activity
-│   ├── Ledger.jsx          # expenses/income CRUD + category management
-│   ├── Habits.jsx          # habit CRUD + streak tracking
-│   └── Tasks.jsx           # task CRUD + checklist
+│   ├── Dashboard.jsx        # Monthly summary + recent activity
+│   ├── Ledger.jsx           # Expenses/income CRUD + category management
+│   ├── Habits.jsx           # Habit CRUD + streak tracking
+│   └── Tasks.jsx            # Task CRUD + checklist
 └── styles/
-    ├── tokens.css           # design tokens (colors, type, spacing)
-    └── global.css           # base styles, shared card/button/form classes
+    ├── tokens.css           # Design tokens (colors, type, spacing)
+    └── global.css           # Base styles, shared card/button/form classes
 ```
 
-## Notes
+## Roadmap
 
-- Auth token is stored in `localStorage`. Fine for local development; for production consider httpOnly cookies instead to reduce XSS exposure.
-- Currency is formatted as INR (`en-IN` locale) — change the locale/currency in `src/utils/format.js` if you need something else.
-- No test suite included yet — a good next addition once the UI settles.
+- [ ] Test suite (unit + integration)
+- [ ] Spending-by-category visualization on the dashboard
+- [ ] Dark mode
+- [ ] PWA support for offline access
+
+## Security Notes
+
+- Auth tokens are stored in `localStorage`, which is standard for local development. For production deployments handling sensitive financial data, httpOnly cookies are recommended to reduce XSS exposure.
+- Currency is formatted for the `en-IN` locale (INR) — update `src/utils/format.js` for other locales/currencies.
+
+## License
+
+This project is licensed under the MIT License.
+
+---
+
+## Author
+
+**Siddharth Tiwari**
+
+- Portfolio: [siddharth-tiwari.vercel.app](https://siddharth-tiwari.vercel.app/)
+- LinkedIn: [in/siddharth-tiwari-394451271](https://www.linkedin.com/in/siddharth-tiwari-394451271/)
+- GitHub: [@Sidd-Tiwari](https://github.com/Sidd-Tiwari)
+- LeetCode: [Sidd-Tiwari](https://leetcode.com/u/Sidd-Tiwari/)
+
+If you found this project useful or interesting, consider giving it a ⭐ on GitHub.
